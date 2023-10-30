@@ -19,7 +19,7 @@ const getRandomFileName = () => {
   return timestamp + random
 }
 
-const getPDF = async ({ htmlContent, pdfName, pdfFormat = 'A4' }) => {
+const getPDF = async ({ htmlContent }) => {
   const browser = await puppeteer.launch({
     headless: 'new',
     args: ['--no-sandbox'],
@@ -29,11 +29,7 @@ const getPDF = async ({ htmlContent, pdfName, pdfFormat = 'A4' }) => {
   const page = await browser.newPage()
   await page.setContent(htmlContent)
 
-  const pdfParams = {
-    path: pdfName || `${getRandomFileName()}.pdf`,
-    format: pdfFormat,
-  }
-  const pdfFile = await page.pdf(pdfParams)
+  const pdfFile = await page.pdf()
 
   await page.close()
   await browser.close()
