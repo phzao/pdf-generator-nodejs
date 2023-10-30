@@ -32,6 +32,6 @@ RUN apk add --no-cache tini
 COPY package*.json /
 EXPOSE 3000
 
-#CMD ["sh", "-c", "pm2-runtime start index.js --watch"]
-CMD ["sh", "-c", "node index.js"]
+CMD ["sh", "-c", "pm2-runtime start index.js --watch"]
+#CMD ["sh", "-c", "node index.js"]
 
