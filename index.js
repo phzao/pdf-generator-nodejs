@@ -10,6 +10,8 @@ const app = express()
 const port = process.env.NODE_PORT || 3000
 
 app.use(helmet())
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json({ limit: '20mb' }))
 
 const getRandomFileName = () => {
   const timestamp = new Date().toISOString().replace(/[-:.]/g, '')
@@ -17,7 +19,7 @@ const getRandomFileName = () => {
   return timestamp + random
 }
 
-const getPDF = async ({ pdfName, pdfFormat = 'A4', htmlContent }) => {
+const getPDF = async ({ htmlContent, pdfName, pdfFormat = 'A4' }) => {
   const browser = await puppeteer.launch({
     headless: 'new',
     args: ['--no-sandbox'],
@@ -25,13 +27,13 @@ const getPDF = async ({ pdfName, pdfFormat = 'A4', htmlContent }) => {
   })
 
   const page = await browser.newPage()
-
   await page.setContent(htmlContent)
 
-  const pdfFile = await page.pdf({
+  const pdfParams = {
     path: pdfName || `${getRandomFileName()}.pdf`,
     format: pdfFormat,
-  })
+  }
+  const pdfFile = await page.pdf(pdfParams)
 
   await page.close()
   await browser.close()
@@ -39,19 +41,21 @@ const getPDF = async ({ pdfName, pdfFormat = 'A4', htmlContent }) => {
   return pdfFile
 }
 
-app.get('v1/download/pdf', async (req, res, next) => {
+app.get('/pdf', async (req, res, next) => {
   res.contentType('application/pdf')
   try {
+    console.log('req', req.body)
     if (!req?.body?.htmlContent) throw `htmlContent is required`
-
     const pdfFile = await getPDF(req.body)
     return res.send(pdfFile)
   } catch (error) {
     console.error(error)
+    return res.send(error)
   }
 })
 
 app.get('/', (req, res) => {
+  console.log('heee')
   res.send('<h1>Hello World!</h1>')
 })
 

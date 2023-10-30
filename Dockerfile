@@ -19,6 +19,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 
 ENV NODE_ENV=production
 
+RUN npm install pm2 sequelize-cli -g
 
 COPY . .
 
@@ -31,6 +32,6 @@ RUN apk add --no-cache tini
 COPY package*.json /
 EXPOSE 3000
 
-#CMD ["node index.js"]
+#CMD ["sh", "-c", "pm2-runtime start index.js --watch"]
 CMD ["sh", "-c", "node index.js"]
 
