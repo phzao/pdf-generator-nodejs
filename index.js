@@ -3,6 +3,7 @@
 const express = require('express')
 const helmet = require('helmet')
 const puppeteer = require('puppeteer')
+require('dotenv').config()
 
 const app = express()
 
@@ -38,7 +39,7 @@ const getPDF = async ({ pdfName, pdfFormat = 'A4', htmlContent }) => {
   return pdfFile
 }
 
-app.get('/download/pdf', async (req, res, next) => {
+app.get('v1/download/pdf', async (req, res, next) => {
   res.contentType('application/pdf')
   try {
     if (!req?.body?.htmlContent) throw `htmlContent is required`
@@ -51,7 +52,7 @@ app.get('/download/pdf', async (req, res, next) => {
 })
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('<h1>Hello World!</h1>')
 })
 
 app.listen(port, () => {
