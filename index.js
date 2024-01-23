@@ -42,7 +42,9 @@ app.get('/pdf', async (req, res, next) => {
   try {
     console.log('req', req.body)
     if (!req?.body?.htmlContent) throw `htmlContent is required`
-    const pdfFile = await getPDF(req.body)
+    
+    console.log('req', atob(req.body.htmlContent))
+    const pdfFile = await getPDF({ htmlContent: atob(req.body.htmlContent)})
     return res.send(pdfFile)
   } catch (error) {
     console.error(error)
